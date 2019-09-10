@@ -3,8 +3,8 @@ connector from exim4 'pipe' transport to Wekan
 
 
 ```
-sudo cp exim4+conf.d+router+901_wekan_submission
-sudo cp exim4+conf.d+transport+91_wekan
+sudo cp exim4+conf.d+router+901_wekan_submission /etc/exim4/conf.d/router/901_wekan_submission
+sudo cp exim4+conf.d+transport+91_wekan /etc/exim4/conf.d/transport/91_wekan
 
 sudo mkdir /usr/local/wekan/
 sudo mkdir /usr/local/wekan/bin
