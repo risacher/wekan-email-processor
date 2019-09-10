@@ -1,0 +1,6 @@
+transport_wekan:
+    driver = pipe
+    command = /usr/local/wekan/bin/wekan-mail
+    user = nobody
+    group = nogroup
+    
