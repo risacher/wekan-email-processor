@@ -1,0 +1,7 @@
+{
+  "url": "https://servername.org/wekan/",
+  "username": "adminacct",
+  "password": "yerpassword",
+  "board": "boardname for API example",
+  "list": "listname for API example"
+}

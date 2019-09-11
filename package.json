@@ -9,6 +9,7 @@
   "author": "Dan Risacher (dan@risacher.org)",
   "license": "MIT",
   "dependencies": {
-    "mailparser": "^2.7.1"
+    "mailparser": "^2.7.1",
+    "node-fetch": "^2.6.0"
   }
 }

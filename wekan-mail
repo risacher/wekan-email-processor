@@ -1,4 +1,4 @@
-#!/usr/bin/node // -*- mode: javascript -*-
+#!/usr/bin/node 
 
 // either install in /usr/local/wekan/bin/wekan-mail
 // or fix the exim4 transport config to point to this script
@@ -32,4 +32,7 @@ process.stdin.on('end', function() {
 
 */
 
-/* 
+
+/* Local Variables:  */
+/* mode: javascript  */
+/* End:              */

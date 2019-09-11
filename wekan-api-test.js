@@ -1,3 +1,4 @@
+"use strict";
 const fs = require('fs');
 const fetch = require('node-fetch');
 
@@ -10,41 +11,46 @@ var headers = {
     "Content-Type": "application/json",
 };
 var status = console.log;
+var boards = [];
+var boardCache = {};
 
-login();
+login().then((rLogin) => {
+  return fetchBoards(rLogin.id, rLogin.token);
+}).then((rBoards) => {
+  return fetchBoard(rBoards, creds.board);
+}).then((rBoard) => {
+  return rBoard.lists.find((e) => { return e.title == creds.list;  })
+  ._id;
+}).then(lId => { console.log (`THE LIST ID ${lId}`); })
 
 function login() {
   delete headers.Authorization;
   status('attempting login with username/password');
-  fetch(url + "users/login", {
+  return fetch(url + "users/login", {
     method: 'POST',
     headers: headers, 
     body: JSON.stringify({username: creds.username, password: creds.password })
   }).then((response) => { return response.json(); })
     .then((rLogin) => {
       console.log(rLogin);
-      token=rLogin.token;
+      let token=rLogin.token;
       if (token) { status('logged in with username password'); }
       else { status('username/password login failed'); }
       
 //      sessionStorage.setItem("wekantoken",token);
       headers.Authorization = "bearer "+rLogin.token;
-      id=rLogin.id;
+      let id=rLogin.id;
 //      sessionStorage.setItem("wekanid",id);
       console.log(JSON.stringify(rLogin));
       // document.getElementById('log').innerHTML = JSON.stringify(rLogin);
       return rLogin;
-    }).then((rLogin) => {
-      fetchBoards(rLogin.id, rLogin.token);
     })
-  return false;
 };
 
 
-function fetchBoards(id, token) {
-  headers.Authorization = "bearer "+token;
+function fetchBoards(id) {
   status ('fetching list of boards');
-  fetch(url+"api/users/"+id+"/boards", {
+  return fetch(url+"api/users/"+id+"/boards", {
     method: 'GET',
     headers: headers
   })
@@ -63,8 +69,30 @@ function fetchBoards(id, token) {
         //   o.appendChild(document.createTextNode(e.title));
         //   s.appendChild(o);
         // });
+        boards = rBoards;
+        return rBoards;
       } else {
         status("board list not loaded.  Login?");
+        return false;
       }
     })
+}
+
+function fetchBoard(rBoards, board) {
+  var bId = rBoards.find((e) => { return e.title == board; })._id; 
+  status (`fetching lists for board ${board} with id ${bId}`);
+  
+  return fetch(url+"api/boards/"+bId+"/export", {
+    method: 'GET',
+    headers: headers
+  }).then((response) => {
+    // not using .json() to debug Weken returning zero length results
+    return response.text(); })
+    .then((rBoard) => {
+      //console.log(rBoard.length);
+      //console.log(Object.keys(JSON.parse(rBoard)));
+      boardCache[bId] = JSON.parse(rBoard);
+      console.log(boardCache[bId].lists);
+      return JSON.parse(rBoard);
+    });
 }
