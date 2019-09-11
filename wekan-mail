@@ -15,7 +15,9 @@ simpleParser(process.stdin, {}, (err, parsed) => {
      // if a exim4 pipe transport outputs something, where does it go?
     console.log('wekan-email error', err);
   } else {
-    fs.writeFileSync('/tmp/'+uid+'.mail', util.format(process.argv, process.env, parsed));
+    fs.writeFileSync('/tmp/'+uid+'.mail', JSON.stringify({argv: process.argv,
+                                                          env: process.env,
+                                                          message: parsed}));
   }
 });
 

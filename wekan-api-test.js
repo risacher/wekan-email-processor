@@ -3,9 +3,11 @@ const fs = require('fs');
 const fetch = require('node-fetch');
 
 var creds = JSON.parse(fs.readFileSync('creds.json'));
+var test_message = JSON.parse(fs.readFileSync('test-message.json'));
 
-var url = creds.url
-//console.log(JSON.parse(creds));
+var url = creds.url;
+var sender = test_message.message.from.value[0].address;
+console.log(test_message);
 
 var headers = {
     "Content-Type": "application/json",
@@ -15,9 +17,10 @@ var boards = [];
 var boardCache = {};
 
 login().then((rLogin) => {
-  return fetchBoards(rLogin.id, rLogin.token);
-}).then((rBoards) => {
-  return fetchBoard(rBoards, creds.board);
+  return Promise.all([fetchUsers(),
+                      fetchBoards(rLogin.id)])
+}).then((results) => {
+  return fetchBoard(results[1] /*rBoards*/, creds.board);
 }).then((rBoard) => {
   return rBoard.lists.find((e) => { return e.title == creds.list;  })
   ._id;
@@ -90,9 +93,32 @@ function fetchBoard(rBoards, board) {
     return response.text(); })
     .then((rBoard) => {
       //console.log(rBoard.length);
-      //console.log(Object.keys(JSON.parse(rBoard)));
       boardCache[bId] = JSON.parse(rBoard);
-      console.log(boardCache[bId].lists);
+      console.log(Object.keys(boardCache[bId]));
+      console.log(boardCache[bId].users);
       return JSON.parse(rBoard);
     });
 }
+
+function fetchUsers() {
+  return fetch(url+"api/users", {
+    method: 'GET',
+    headers: headers
+  }).then((response) => {
+    return response.json();
+  }).then(rUsers => {
+    console.log('USERS: ', rUsers);
+    Promise.all(
+      rUsers.map((e,i,a) => {
+        return fetch(url+"api/users/"+e._id, {
+          method: 'GET',
+          headers: headers
+        }).then(resp => { return resp.json(); })
+          .then((rUser) => {
+            console.log('user', rUser);
+            return rUser;
+          })
+      }))
+  })
+};
+  
