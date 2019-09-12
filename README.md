@@ -7,6 +7,8 @@ As of now, wekan-mail ingests mail from exim4, parses it and dumps it to a file 
 
 Separately wekan-api-test.js show an example of how to use the wekan API from nodejs.
 
+Tentatively, plan is for username+boardId+listName.wekan@domain.com to create a card in board boardId, into list listName, with card title Subject and description messageBody.
+
 
 ```
 sudo cp exim4+conf.d+router+901_wekan_submission /etc/exim4/conf.d/router/901_wekan_submission
