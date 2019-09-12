@@ -1,0 +1,25 @@
+#!/usr/bin/node 
+
+// either install in /usr/local/wekan/bin/wekan-mail
+// or fix the exim4 transport config to point to this script
+
+
+const fs = require('fs');
+
+var uid = Math.random().toString(36).replace(/[^a-z]+/g, '');
+
+
+
+var content = '';
+process.stdin.resume();
+process.stdin.on('data', function(buf) { content += buf.toString(); });
+process.stdin.on('end', function() {
+  // your code here
+  fs.writeFileSync('/tmp/'+uid+'.mail', content);
+});
+
+
+
+/* Local Variables:  */
+/* mode: javascript  */
+/* End:              */

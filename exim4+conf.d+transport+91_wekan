@@ -1,6 +1,9 @@
 transport_wekan:
     driver = pipe
     command = /usr/local/wekan/bin/wekan-mail
+    current_directory = /usr/local/wekan/bin/
     user = nobody
     group = nogroup
+    log_fail_output = true
+    return_fail_output = true
     
