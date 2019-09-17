@@ -1,5 +1,5 @@
 wekan_submission:
     driver = accept
-    local_part_suffix = .wekan
+    local_part_prefix = wekan+
     transport = transport_wekan
     
